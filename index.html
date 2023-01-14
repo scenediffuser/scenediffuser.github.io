@@ -42,14 +42,16 @@
     .author {
       font-size: 16px;
     }
-    .action {
+    .task {
       padding-bottom: 12px;
     }
   </style>
   <script type="importmap">
     {
       "imports": {
-        "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+        "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js",
+        "three": "https://unpkg.com/three@0.127.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.127.0/examples/jsm/"
       }
     }
   </script>
@@ -88,7 +90,11 @@
           </p>
 
           <div style="margin: 16px 0; font-size: 18px;">
-            <p> <a href="">Paper</a> &nbsp;|&nbsp; <a href="">arXiv</a> &nbsp;|&nbsp; <a href="https://github.com/Silverster98/SceneDiffuser">Code</a> &nbsp;|&nbsp; <a href="">Huggingface Space</a></p>
+            <p> <a href="">arXiv</a> &nbsp;|&nbsp; <a href="">Huggingface Space</a></p>
+          </div>
+
+          <div>
+            <img src="./assets/teaser.png"/>
           </div>
 
         </div>
@@ -100,8 +106,206 @@
           <p style="text-align:justify">
             We introduce SceneDiffuser, a conditional generative model for 3D scene understanding. SceneDiffuser provides a unified model for solving scene-conditioned generation, optimization, and planning. In contrast to prior works, SceneDiffuser is intrinsically scene-aware, physics-based, and goal-oriented. With an iterative sampling strategy, SceneDiffuser jointly formulates the scene-aware generation, physics-based optimization, and goal-oriented planning via a diffusion-based denoising process in a fully differentiable fashion. Such a design alleviates the discrepancies among different modules and the posterior collapse of previous scene-conditioned generative models. We evaluate SceneDiffuser with various 3D scene understanding tasks, including human pose and motion generation, dexterous grasp generation, path planning for 3D navigation, and motion planning for robot arms. The results show significant improvements compared with previous models, demonstrating the tremendous potential of SceneDiffuser for the broad community of 3D scene understanding.
           </p>
+        </div>
 
+        <hr>
+        
+        <div id="results" class="content-block">
+          <h2 class="sub-title has-text-centered">Results</h2>
+
+          <div class="task">
+            <h3 class="subsub-title" style="margin-bottom: 1em;">1. Human Pose Generation in 3D Scenes</h3>
+
+            <div class="columns is-centered" style="position: relative;">
+              <div class="control" style="position: absolute; left: 3%;">
+                <label class="radio">
+                  <input id="MPH1Library" type="radio" name="scene"> MPH1Library
+                </label>
+                <br>
+                <label class="radio">
+                  <input id="MPH16" type="radio" name="scene"> MPH16
+                </label>
+                <br>
+                <label class="radio">
+                  <input id="N0SittingBooth" type="radio" name="scene"> N0SittingBooth
+                </label>
+                <br>
+                <label class="radio">
+                  <input id="N3OpenArea" type="radio" name="scene"> N3OpenArea
+                </label>
+              </div>
+              <canvas id="webgl_pose" style="height: 50%; width: 50%;"></canvas>
+            </div>
+          </div>
           
+          <div class="task">
+            <h3 class="subsub-title">2. Human Motion Generation in 3D Scenes</h3>
+            <table class="table is-bordered my-table" style="margin: 0 1em;">
+              <tbody>
+                <tr>
+                  <th class="has-text-centered">
+                    N0SittingBooth
+                  </th>
+                  <th class="has-text-centered">
+                    N3OpenArea
+                  </th>
+                </tr>
+                <tr>
+                  <td>
+                    <video controls="controls" loop="loop" autoplay="autoplay">
+                      <source src="./assets/motion_generation/s1_1.mp4" type="video/mp4">
+                    </video>
+                  </td>
+                  <td>
+                    <video controls="controls" loop="loop" autoplay="autoplay">
+                      <source src="./assets/motion_generation/s2_1.mp4" type="video/mp4">
+                    </video>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <video controls="controls" loop="loop" autoplay="autoplay">
+                      <source src="./assets/motion_generation/s1_2.mp4" type="video/mp4">
+                    </video>
+                  </td>
+                  <td>
+                    <video controls="controls" loop="loop" autoplay="autoplay">
+                      <source src="./assets/motion_generation/s2_2.mp4" type="video/mp4">
+                    </video>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <video controls="controls" loop="loop" autoplay="autoplay">
+                      <source src="./assets/motion_generation/s1_3.mp4" type="video/mp4">
+                    </video>
+                  </td>
+                  <td>
+                    <video controls="controls" loop="loop" autoplay="autoplay">
+                      <source src="./assets/motion_generation/s2_3.mp4" type="video/mp4">
+                    </video>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p style="margin: 0 1.5em; font-size: 0.8em; text-align:justify;">Note: Each column shows sampled human motions from the same start pose.</p>
+          </div>
+          
+          <div class="task">
+            <h3 class="subsub-title">3. Dexterous Grasp Generation for 3D Objects</h3>
+
+            <div class="columns is-centered" style="position: relative;">
+              <div style="position: absolute; left: 3%; top: 3%;">
+                <span style="font-size: 0.8em;">Object </span>
+                <div class="select is-small">
+                  <select id="objectSelector">
+                    <option></option>
+                    <option>contactdb+apple</option>
+                    <option>contactdb+camera</option>
+                    <option>contactdb+cylinder_medium</option>
+                    <option>contactdb+door_knob</option>
+                    <option>contactdb+rubber_duck</option>
+                    <option>contactdb+water_bottle</option>
+                    <option>ycb+baseball</option>
+                    <option>ycb+pear</option>
+                    <option>ycb+potted_meat_can</option>
+                    <option>ycb+tomato_soup_can</option>
+                  </select>
+                </div>
+                &nbsp;&nbsp;&nbsp;
+                <span style="font-size: 0.8em;">Sample </span>
+                <div class="select is-small">
+                  <select id="sampleSelector">
+                    <option></option>
+                    <option>grasp_0</option>
+                    <option>grasp_1</option>
+                    <option>grasp_2</option>
+                    <option>grasp_3</option>
+                    <option>grasp_4</option>
+                    <option>grasp_5</option>
+                    <option>grasp_6</option>
+                    <option>grasp_7</option>
+                    <option>grasp_8</option>
+                    <option>grasp_9</option>
+                  </select>
+                </div>
+              </div>
+              <canvas id="webgl_grasp" style="height: 50%; width: 50%;"></canvas>
+            </div>
+          </div>
+          
+          <div class="task">
+            <h3 class="subsub-title">4. Path Planning for 3D Scene Navigation</h3>
+            <table class="table is-bordered my-table" style="margin: 0 1em;">
+              <tbody>
+                <tr>
+                  <td>
+                    <img src="./assets/path_planning/scene0603_00_N0pT/res_097.png"/>
+                  </td>
+                  <td>
+                    <img src="./assets/path_planning/scene0621_00_cJ4H/res_074.png"/>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <img src="./assets/path_planning/scene0634_00_48Y3/res_054.png"/>
+                  </td>
+                  <td>
+                    <img src="./assets/path_planning/scene0641_00_KBKx/res_050.png"/>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <img src="./assets/path_planning/scene0645_00_35Hy/res_118.png"/>
+                  </td>
+                  <td>
+                    <img src="./assets/path_planning/scene0678_00_QbNL/res_130.png"/>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <img src="./assets/path_planning/scene0694_00_DgAL/res_053.png"/>
+                  </td>
+                  <td>
+                    <img src="./assets/path_planning/scene0698_00_tT3Q/res_074.png"/>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p style="margin: 0 1.5em; font-size: 0.8em; text-align:justify;">Note: The red balls represent the planning result, starting with the lightest red ball and ending with the darkest red ball. The green ball indicates the target position.</p>
+          </div>
+          
+          <div class="task">
+            <h3 class="subsub-title">5. Motion Planning for Robot Arms</h3>
+            <table class="table is-bordered my-table" style="margin: 0 1em;">
+              <tbody>
+                <tr>
+                  <td>
+                    <img src="./assets/arm_motion/160-1 00_00_00-00_00_30.gif"/>
+                  </td>
+                  <td>
+                    <img src="./assets/arm_motion/160-4 00_00_00-00_00_30.gif"/>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <img src="./assets/arm_motion/161-3 00_00_00-00_00_30.gif"/>
+                  </td>
+                  <td>
+                    <img src="./assets/arm_motion/161-5 00_00_00-00_00_30.gif"/>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <img src="./assets/arm_motion/164-1 00_00_00-00_00_30.gif"/>
+                  </td>
+                  <td>
+                    <img src="./assets/arm_motion/164-5 00_00_00-00_00_30.gif"/>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <hr>
@@ -143,9 +347,9 @@
 
   function displayWindowSize() {
     let w = document.documentElement.clientWidth;
-    console.log(w)
-    let c;
-    let o;
+    // console.log(w)
+    let c
+    let o
     if (w >= 1200) {
       c = 'is-6'
       o = 'is-offset-3'
@@ -161,8 +365,121 @@
     app.$data.content = c
     app.$data.offset = o
   }
-  window.addEventListener("resize", displayWindowSize);
-  displayWindowSize();
+  window.addEventListener("resize", displayWindowSize)
+  displayWindowSize()
+
+  import * as THREE from 'three'
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+  import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'
+
+  // pose generation in 3D scene
+  let canvas1 = document.querySelector('#webgl_pose')
+  let scene1 = new THREE.Scene()
+  let assetLoader1 = new GLTFLoader()
+  let model1
+
+  let camera1 = new THREE.PerspectiveCamera(45, 1.618 / 1.0, 0.1, 100)
+  camera1.position.set(4, 3, -3)
+  let spotLight1 = new THREE.SpotLight(0xFFFFFF)
+  spotLight1.position.set(50, 100, -100)
+  let grid1 = new THREE.GridHelper(30, 30)
+  scene1.add(camera1)
+  scene1.add(spotLight1)
+  scene1.add(grid1)
+
+  let controls1 = new OrbitControls(camera1, canvas1)
+  controls1.enableZoom = true
+  // controls2.enableDamping = true
+  controls1.object.position.set(camera1.position.x, camera1.position.y, camera1.position.z)
+  controls1.target = new THREE.Vector3(0, 0, 0)
+  controls1.update()
+
+  let renderer1 = new THREE.WebGLRenderer({
+      canvas: canvas1,
+      alpha: true,
+  })
+  renderer1.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+  renderer1.outputEncoding = THREE.sRGBEncoding
+  renderer1.setAnimationLoop(() => {
+    renderer1.render(scene1, camera1)
+  });
+
+  const radioButtons = document.querySelectorAll('input[name="scene"]')
+  for (const radioButton of radioButtons) {
+      radioButton.addEventListener('change', (e) => {
+        scene1.remove(model1)
+
+        let assetUrl = new URL('./assets/pose_generation/'+radioButton.id+'.glb', import.meta.url)
+        assetLoader1.load(assetUrl.href, gltf => {
+          model1 = gltf.scene
+          model1.rotateX(-Math.PI / 2)
+          scene1.add(model1)
+        }, undefined, (error) => {console.error(error)})
+      });
+  }
+
+  // grasp generation for 3D object
+  let canvas2 = document.querySelector('#webgl_grasp')
+  let scene2 = new THREE.Scene()
+  let assetLoader2 = new GLTFLoader()
+  let model2
+
+  let camera2 = new THREE.PerspectiveCamera(45, 1.618 / 1.0, 0.1, 100)
+  camera2.position.set(0.25, 0.2, -0.25)
+  let spotLight2 = new THREE.SpotLight(0xFFFFFF)
+  spotLight2.position.set(50, 100, -100)
+  let grid2 = new THREE.GridHelper(30, 30)
+  scene2.add(camera2)
+  scene2.add(spotLight2)
+  scene2.add(grid2)
+
+  let controls2 = new OrbitControls(camera2, canvas2)
+  controls2.enableZoom = true
+  // controls2.enableDamping = true
+  controls2.object.position.set(camera2.position.x, camera2.position.y, camera2.position.z)
+  controls2.target = new THREE.Vector3(0, 0, 0)
+  controls2.update()
+
+  let renderer2 = new THREE.WebGLRenderer({
+      canvas: canvas2,
+      alpha: true,
+  })
+  renderer2.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+  renderer2.outputEncoding = THREE.sRGBEncoding
+  renderer2.setAnimationLoop(() => {
+    renderer2.render(scene2, camera2)
+  });
+
+  const objSel = document.querySelector('#objectSelector')
+  objSel.addEventListener('change', (e) => {
+    // console.log(objSel.value)
+    samSel.value = ''
+  })
+  const samSel = document.querySelector('#sampleSelector')
+  samSel.addEventListener('change', (e) => {
+    console.log(objSel.value, samSel.value)
+    if (objSel.value == '' || samSel.value == '') {
+      return
+    }
+
+    scene2.remove(model2)
+    let assetUrl = new URL(`./assets/grasp_generation/${objSel.value}/${samSel.value}.glb`, import.meta.url)
+    assetLoader2.load(assetUrl.href, gltf => {
+      model2 = gltf.scene
+      scene2.add(model2)
+    }, undefined, (error) => {console.error(error)})
+  })
+
+  // resize renderers
+  function resizeRenderers() {
+    let content_width = document.querySelector('#results').offsetWidth
+    renderer1.setSize(content_width, content_width / 1.618)
+    renderer2.setSize(content_width, content_width / 1.618)
+  }
+  window.addEventListener('resize', () => {
+    resizeRenderers()
+  })
+  resizeRenderers()
 </script>
 
 </html>
