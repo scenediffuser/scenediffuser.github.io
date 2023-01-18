@@ -91,7 +91,7 @@
           </p>
 
           <div style="margin: 1em 0; font-size: 1.1em;">
-            <p> <a href="">arXiv</a> &nbsp;|&nbsp; <a href="">Huggingface Space</a></p>
+            <p> <a href="https://arxiv.org/abs/2301.06015">arXiv</a> &nbsp;|&nbsp; <a href="">Huggingface Space</a></p>
           </div>
         </div>
 
@@ -104,9 +104,13 @@
 
         <div class="has-text-centered content-block">
           <h2 class="sub-title">Abstract</h2>
-          <p style="text-align:justify">
+          <p style="text-align:justify; margin-bottom: 1.5em;">
             We introduce SceneDiffuser, a conditional generative model for 3D scene understanding. SceneDiffuser provides a unified model for solving scene-conditioned generation, optimization, and planning. In contrast to prior works, SceneDiffuser is intrinsically scene-aware, physics-based, and goal-oriented. With an iterative sampling strategy, SceneDiffuser jointly formulates the scene-aware generation, physics-based optimization, and goal-oriented planning via a diffusion-based denoising process in a fully differentiable fashion. Such a design alleviates the discrepancies among different modules and the posterior collapse of previous scene-conditioned generative models. We evaluate SceneDiffuser with various 3D scene understanding tasks, including human pose and motion generation, dexterous grasp generation, path planning for 3D navigation, and motion planning for robot arms. The results show significant improvements compared with previous models, demonstrating the tremendous potential of SceneDiffuser for the broad community of 3D scene understanding.
           </p>
+
+          <video controls="controls" loop="loop" autoplay="autoplay" style="padding: 0 5em;">
+            <source src="./assets/illustration-720.mp4" type="video/mp4">
+          </video>
         </div>
 
         <hr>
@@ -118,24 +122,25 @@
             <div class="columns is-centered" style="position: relative;">
               <div class="control" style="position: absolute; left: 3%;">
                 <label class="radio">
-                  <input id="MPH1Library" type="radio" name="scene"> MPH1Library
+                  <input value="MPH1Library" type="radio" name="scene"> MPH1Library
                 </label>
                 <br>
                 <label class="radio">
-                  <input id="MPH16" type="radio" name="scene"> MPH16
+                  <input value="MPH16" type="radio" name="scene"> MPH16
                 </label>
                 <br>
                 <label class="radio">
-                  <input id="N0SittingBooth" type="radio" name="scene"> N0SittingBooth
+                  <input value="N0SittingBooth" type="radio" name="scene"> N0SittingBooth
                 </label>
                 <br>
                 <label class="radio">
-                  <input id="N3OpenArea" type="radio" name="scene"> N3OpenArea
+                  <input value="N3OpenArea" type="radio" name="scene"> N3OpenArea
                 </label>
               </div>
               <div id="pose_loading" style="position: absolute; left: 50%; top: 45%;"></div>
               <canvas id="webgl_pose" style="height: 50%; width: 50%;"></canvas>
             </div>
+            <p style="margin: 0 1.5em; font-size: 0.8em; text-align:justify;">Note: Click the radio button to select a scene for result visualization and drag to move your view around.</p>
           </div>
         </div>
 
@@ -150,7 +155,6 @@
                 <span style="font-size: 0.8em;">Object </span>
                 <div class="select is-small">
                   <select id="objectSelector">
-                    <option></option>
                     <option>contactdb+apple</option>
                     <option>contactdb+camera</option>
                     <option>contactdb+cylinder_medium</option>
@@ -167,7 +171,6 @@
                 <span style="font-size: 0.8em;">Sample </span>
                 <div class="select is-small">
                   <select id="sampleSelector">
-                    <option></option>
                     <option>grasp_0</option>
                     <option>grasp_1</option>
                     <option>grasp_2</option>
@@ -184,6 +187,7 @@
               <div id="grasp_loading" style="position: absolute; left: 50%; top: 45%;"></div>
               <canvas id="webgl_grasp" style="height: 50%; width: 50%;"></canvas>
             </div>
+            <p style="margin: 0 1.5em; font-size: 0.8em; text-align:justify;">Note: Click the select dropdown to select a object and a pre-sampled grasp for result visualization. Drag to move your view around.</p>
           </div>
         </div>
 
@@ -334,6 +338,12 @@
           <p style="text-align:justify">If you find our project useful, please consider citing us:</p>
           <div style="padding-top: 1rem; text-align: left;">
 <pre><code>
+@article{huang2023diffusion,
+  title={Diffusion-based Generation, Optimization, and Planning in 3D Scenes},
+  author={Huang, Siyuan and Wang, Zan and Li, Puhao and Jia, Baoxiong and Liu, Tengyu and Zhu, Yixin and Liang, Wei and Zhu, Song-Chun},
+  journal={arXiv preprint arXiv:2301.06015},
+  year={2023}
+}
 </code></pre>
           </div>
         </div>
@@ -429,19 +439,22 @@
 
   const radioButtons = document.querySelectorAll('input[name="scene"]')
   for (const radioButton of radioButtons) {
-      radioButton.addEventListener('change', (e) => {
-        scene1.remove(model1)
-        document.querySelector('#pose_loading').innerHTML = `<img src="./assets/icons/loading.svg" width="48" height="48">`
+    radioButton.addEventListener('change', (e) => {
+      scene1.remove(model1)
+      document.querySelector('#pose_loading').innerHTML = `<img src="./assets/icons/loading.svg" width="48" height="48">`
+      for (const rb of radioButtons) {rb.disabled = true}
 
-        let assetUrl = new URL('./assets/pose_generation/'+radioButton.id+'.glb', import.meta.url)
-        assetLoader1.load(assetUrl.href, gltf => {
-          model1 = gltf.scene
-          model1.rotateX(-Math.PI / 2)
-          scene1.add(model1)
-          document.querySelector('#pose_loading').innerHTML = ''
-        }, undefined, (error) => {console.error(error)})
-      });
+      let assetUrl = new URL('./assets/pose_generation/'+radioButton.value+'.glb', import.meta.url)
+      assetLoader1.load(assetUrl.href, gltf => {
+        model1 = gltf.scene
+        model1.rotateX(-Math.PI / 2)
+        scene1.add(model1)
+        document.querySelector('#pose_loading').innerHTML = ''
+        for (const rb of radioButtons) {rb.disabled = false}
+      }, undefined, (error) => {console.error(error)})
+    })
   }
+  radioButtons[0].click()
 
   // grasp generation for 3D object
   let canvas2 = document.querySelector('#webgl_grasp')
@@ -484,26 +497,27 @@
   });
 
   const objSel = document.querySelector('#objectSelector')
-  objSel.addEventListener('change', (e) => {
-    // console.log(objSel.value)
-    samSel.value = ''
-  })
   const samSel = document.querySelector('#sampleSelector')
-  samSel.addEventListener('change', (e) => {
-    console.log(objSel.value, samSel.value)
+  objSel.value = 'ycb+baseball'
+  samSel.value = 'grasp_0'
+
+  function load_model2(e) {
     if (objSel.value == '' || samSel.value == '') {
       return
     }
-
     scene2.remove(model2)
     document.querySelector('#grasp_loading').innerHTML = `<img src="./assets/icons/loading.svg" width="48" height="48">`
-    let assetUrl = new URL(`./assets/grasp_generation/${objSel.value}/${samSel.value}.glb`, import.meta.url)
+    let assetUrl = new URL(`./assets/grasp_generation_color/${objSel.value}/${samSel.value}.glb`, import.meta.url)
     assetLoader2.load(assetUrl.href, gltf => {
       model2 = gltf.scene
       scene2.add(model2)
       document.querySelector('#grasp_loading').innerHTML = ''
     }, undefined, (error) => {console.error(error)})
-  })
+  }
+
+  objSel.addEventListener('change', (e) => {samSel.value = ''})
+  samSel.addEventListener('change', load_model2)
+  load_model2()
 
   // resize renderers
   function resizeRenderers() {
