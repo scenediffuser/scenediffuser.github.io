@@ -61,7 +61,7 @@
 <body>
   <div id="app">
     <div class="columns">
-      <div class="column" :class="[content, offset]">
+      <div id="main-content" class="column is-6 is-offset-3" :class="[content, offset]">
 
         <h1 class="title has-text-centered" style="margin-bottom: 0.5em">
           Diffusion-based Generation, Optimization, and Planning in 3D Scenes
@@ -365,16 +365,7 @@
 <script type="module">
   import { createApp } from 'vue'
 
-  let app = createApp({
-    data() {
-      return {
-        content: 'is-6',
-        offset: 'is-offset-3'
-      }
-    }
-  }).mount('#app')
-
-  function displayWindowSize() {
+  function get_layout_config() {
     let w = document.documentElement.clientWidth;
     // console.log(w)
     let c
@@ -382,17 +373,30 @@
     if (w >= 1200) {
       c = 'is-6'
       o = 'is-offset-3'
+    } else if (w >= 900) {
+      c = 'is-8'
+      o = 'is-offset-2'
     } else {
-      if (w >= 900) {
-        c = 'is-8'
-        o = 'is-offset-2'
-      } else {
-        c = 'is-10'
-        o = 'is-offset-1'
-      }
+      c = 'is-10'
+      o = 'is-offset-1'
     }
-    app.$data.content = c
-    app.$data.offset = o
+    return {'content': c, 'offset': o}
+  }
+
+  let content = document.getElementById('main-content')
+  content.classList.remove('is-6')
+  content.classList.remove('is-offset-3')
+
+  let app = createApp({
+    data() {
+      return get_layout_config()
+    }
+  }).mount('#app')
+
+  function displayWindowSize() {
+    let layout = get_layout_config()
+    app.$data.content = layout['content']
+    app.$data.offset = layout['offset']
   }
   window.addEventListener("resize", displayWindowSize)
   displayWindowSize()
