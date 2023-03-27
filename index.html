@@ -8,43 +8,80 @@
   <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"> -->
   <link rel="stylesheet" href="/css/bulma.min.css">
   <style>
-    body {
+    html {
+      height: 100%;
       background-color: #fafafa;
     }
+
+    body {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background-color: #fafafa;
+    }
+
+    #app {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
     hr {
       background-color: #f1f1f1;
     }
+
     .table th {
       padding: 0.2em 0.2em 0 0.2em;
       width: 50%;
     }
+
     .table td {
       padding: 0.25em;
       width: 50%;
     }
+
     .content-block {
       padding: 0 6px;
     }
+
     .title {
       font-size: 32px;
       padding-top: 32px;
     }
+
     .publisher {
       margin-bottom: 1rem;
     }
+
     .sub-title {
       font-size: 26px;
       padding-bottom: 16px;
     }
+
     .subsub-title {
       font-size: 20px;
       padding-bottom: 8px;
     }
+
     .author {
       font-size: 16px;
     }
+
     .task {
       padding-bottom: 12px;
+    }
+
+    @media screen and (min-width: 880px) {
+      .is-840px {
+        flex: none;
+        width: 840px;
+      }
+    }
+    @media screen and (max-width: 879px) {
+      .is-100per {
+        flex: none;
+        width: 100%;
+      }
     }
   </style>
   <script type="importmap">
@@ -60,14 +97,11 @@
 
 <body>
   <div id="app">
-    <div class="columns">
-      <div id="main-content" class="column is-6 is-offset-3" :class="[content, offset]">
-
+    <div class="columns is-centered" style="padding: 0 1em">
+      <div class="column is-840px is-100per">
         <h1 class="title has-text-centered" style="margin-bottom: 0.5em">
           Diffusion-based Generation, Optimization, and Planning in 3D Scenes
         </h1>
-
-        <!-- <p class="publisher has-text-centered">Conference</p> -->
 
         <div class="has-text-centered" style="padding: 0 2em;">
 
@@ -110,9 +144,7 @@
             We introduce SceneDiffuser, a conditional generative model for 3D scene understanding. SceneDiffuser provides a unified model for solving scene-conditioned generation, optimization, and planning. In contrast to prior works, SceneDiffuser is intrinsically scene-aware, physics-based, and goal-oriented. With an iterative sampling strategy, SceneDiffuser jointly formulates the scene-aware generation, physics-based optimization, and goal-oriented planning via a diffusion-based denoising process in a fully differentiable fashion. Such a design alleviates the discrepancies among different modules and the posterior collapse of previous scene-conditioned generative models. We evaluate SceneDiffuser with various 3D scene understanding tasks, including human pose and motion generation, dexterous grasp generation, path planning for 3D navigation, and motion planning for robot arms. The results show significant improvements compared with previous models, demonstrating the tremendous potential of SceneDiffuser for the broad community of 3D scene understanding.
           </p>
 
-          <video controls="controls" loop="loop" autoplay="autoplay" style="padding: 0 5em;">
-            <source src="./assets/illustration-720.mp4" type="video/mp4">
-          </video>
+          <iframe width="560" height="315" src="https://www.youtube.com/embed/a0SSprBoVV4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
         </div>
 
         <hr>
@@ -338,23 +370,22 @@
         <div class="has-text-centered content-block">
           <h2 class="sub-title">Bibtex</h2>
           <p style="text-align:justify">If you find our project useful, please consider citing us:</p>
-          <div style="padding-top: 1rem; text-align: left;">
+          <div style="padding: 1rem; text-align: left;">
 <pre><code>@inproceedings{huang2023diffusion,
   title={Diffusion-based Generation, Optimization, and Planning in 3D Scenes},
   author={Huang, Siyuan and Wang, Zan and Li, Puhao and Jia, Baoxiong and Liu, Tengyu and Zhu, Yixin and Liang, Wei and Zhu, Song-Chun},
   booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
   year={2023}
-}
-</code></pre>
+}</code></pre>
           </div>
         </div>
 
       </div>
     </div>
     
-    <footer class="footer" style="padding: 0 0 1.5rem 0">
-      <div class="columns">
-        <div class="column" :class="[content, offset]">
+    <footer class="footer" style="padding: 0 1em">
+      <div class="columns is-centered">
+        <div class="column is-840px is-100per">
           <hr>
           <p class="has-text-centered" style="font-size: 0.9em;">This website is designed and coded by the authors. Please use <b>chrome</b> for best experience.<br>Send feedback and questions to <a href="https://silvester.wang">Zan Wang</a></p>
         </div>
@@ -364,43 +395,6 @@
 </body>
 
 <script type="module">
-  import { createApp } from 'vue'
-
-  function get_layout_config() {
-    let w = document.documentElement.clientWidth;
-    // console.log(w)
-    let c
-    let o
-    if (w >= 1200) {
-      c = 'is-6'
-      o = 'is-offset-3'
-    } else if (w >= 900) {
-      c = 'is-8'
-      o = 'is-offset-2'
-    } else {
-      c = 'is-10'
-      o = 'is-offset-1'
-    }
-    return {'content': c, 'offset': o}
-  }
-
-  let content = document.getElementById('main-content')
-  content.classList.remove('is-6')
-  content.classList.remove('is-offset-3')
-
-  let app = createApp({
-    data() {
-      return get_layout_config()
-    }
-  }).mount('#app')
-
-  function displayWindowSize() {
-    let layout = get_layout_config()
-    app.$data.content = layout['content']
-    app.$data.offset = layout['offset']
-  }
-  window.addEventListener("resize", displayWindowSize)
-  displayWindowSize()
 
   import * as THREE from 'three'
   import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
